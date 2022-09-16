@@ -2,8 +2,7 @@ import csv
 import re
 
 
-def contact_fill(row):
-
+def contact_fill(row, row_length):
     lastname = re.findall(r'\w+', row[0])
     firstname = re.findall(r'\w+', row[1])
     surname = re.findall(r'\w+', row[2])
@@ -19,8 +18,14 @@ def contact_fill(row):
         contact.extend(surname)
     contact.append(row[3])  # organization
     contact.append(row[4])  # position
-    contact.append(re.sub(phone_pattern, phone_sub, row[5]).rstrip())
-    contact.append(row[6])  # mail
+    contact.append(re.sub(phone_pattern, phone_sub, row[-2]).rstrip())
+    contact.append(row[-1])  # mail
+    while len(contact) < row_length:  # check for data length
+        for pos in contact:
+            if len(pos) > 1:
+                continue
+            else:
+                contact.insert(pos, '')
     return contact
 
 
@@ -45,14 +50,14 @@ def main():
         header = contact_list.pop(0)
         phonebook.append(header)
         for c in contact_list:
-            person = contact_fill(c)
+            person = contact_fill(c, len(header))
             merge_contact(person, phonebook)
             if person[:2] in [p[:2] for p in phonebook]:
                 continue
             else:
                 phonebook.append(person)
 
-    # print(*phonebook, sep='\n')
+    print(*phonebook, sep='\n')
 
     with open("phonebook.csv", "w") as f:
         datawriter = csv.writer(f, delimiter=',')
