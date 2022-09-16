@@ -38,23 +38,28 @@ def merge_contact(contact, book):
     return contact, book
 
 
+def main():
+    with open("phonebook_raw.csv") as f:
+        rows = csv.reader(f, delimiter=',')
+        contact_list = list(rows)
+        header = contact_list.pop(0)
+        phonebook.append(header)
+        for c in contact_list:
+            person = contact_fill(c)
+            merge_contact(person, phonebook)
+            if person[:2] in [p[:2] for p in phonebook]:
+                continue
+            else:
+                phonebook.append(person)
+
+    # print(*phonebook, sep='\n')
+
+    with open("phonebook.csv", "w") as f:
+        datawriter = csv.writer(f, delimiter=',')
+        datawriter.writerows(phonebook)
+
+
 phonebook = []
 
-with open("phonebook_raw.csv") as f:
-    rows = csv.reader(f, delimiter=',')
-    contact_list = list(rows)
-    header = contact_list.pop(0)
-    phonebook.append(header)
-    for c in contact_list:
-        person = contact_fill(c)
-        merge_contact(person, phonebook)
-        if person[:2] in [p[:2] for p in phonebook]:
-            continue
-        else:
-            phonebook.append(person)
-
-print(*phonebook, sep='\n')
-
-with open("phonebook.csv", "w") as f:
-    datawriter = csv.writer(f, delimiter=',')
-    datawriter.writerows(phonebook)
+if __name__ == '__main__':
+    main()
