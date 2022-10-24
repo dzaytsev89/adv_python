@@ -18,7 +18,7 @@ def search_word(pattern, *args):
         return True
 
 
-@logger_to_spec_file
+@logger_to_spec_file(log_file='./log/test.log')
 def search_keys(keys):
     match_list = {}
     response = requests.get(base_url + main_url, headers=header)
